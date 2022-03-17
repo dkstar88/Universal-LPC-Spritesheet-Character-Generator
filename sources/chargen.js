@@ -1,11 +1,11 @@
 _.mixin(_.str.exports());
 
-$.expr[':'].icontains = function(a, i, m) {
+$.expr[':'].icontains = function (a, i, m) {
   return jQuery(a).text().toUpperCase()
-      .indexOf(m[3].toUpperCase()) >= 0;
+    .indexOf(m[3].toUpperCase()) >= 0;
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
 
   var params = jHash.val();
   var sheetCredits = [];
@@ -28,11 +28,12 @@ $(document).ready(function() {
   var animationItems = [1, 2, 3, 4, 5, 6, 7, 8]; // default for walk
 
   // on hash (url) change event, interpret and redraw
-  jHash.change(function() {
+  jHash.change(function () {
     params = jHash.val();
     interpretParams();
     redraw();
     showOrHideElements();
+    console.log(jHash.val())
   });
 
   replaceDivs();
@@ -46,8 +47,9 @@ $(document).ready(function() {
   redraw();
   showOrHideElements();
   nextFrame();
+  drawPreviews();
 
-  $("input[type=radio]").attr('title', function() {
+  $("input[type=radio]").attr('title', function () {
     var name = "";
     if ($(this).data(`layer_1_${getBodyTypeName()}`)) {
       name = $(this).data(`layer_1_${getBodyTypeName()}`);
@@ -69,8 +71,9 @@ $(document).ready(function() {
   });
 
   // set params and redraw when any radio button is clicked on
-  $("input[type=radio]").each(function() {
-    $(this).click(function() {
+  $("input[type=radio]").each(function () {
+    $(this).click(function () {
+      
       const id = $(this).attr('id');
       if (id.startsWith("sex-")) {
         selectPossibleBodyType();
@@ -79,68 +82,73 @@ $(document).ready(function() {
       redraw();
       showOrHideElements();
     });
+
   });
 
   // Toggle display of a list elements children when clicked
   // Again, do not multiple toggle when clicking on children
-  $("#chooser ul>li").click(function(event) {
-    $(this).children("span").toggleClass("condensed").toggleClass("expanded");
-    var $ul = $(this).children("ul");
-    $ul.toggle('slow').promise().done(drawPreviews);
-    event.stopPropagation();
-  });
+  // $("#chooser ul>li").click(function (event) {
+  //   $(this).children("span").toggleClass("condensed").toggleClass("expanded");
+  //   var $ul = $(this).children("ul");
+  //   $ul.toggle('slow').promise().done(drawPreviews);
+  //   event.stopPropagation();
+  // });
 
-  $("#collapse").click(function() {
-    $("#chooser>ul ul").hide('slow');
-    $("#chooser>ul span.expanded").removeClass("expanded").addClass("condensed");
-  });
-  $("#expand").click(function() {
-    let parents = $('input[type="radio"]:checked').parents("ul")
-    parents.prev('span').addClass("expanded")
-    parents.show().promise().done(drawPreviews)
-  })
+  // $("#collapse").click(function () {
+  //   $("#chooser ul ul").hide('slow');
+  //   $("#chooser ul span.expanded").removeClass("expanded").addClass("condensed");
+  // });
+  // $("#expand").click(function () {
+  //   let parents = $('input[type="radio"]:checked').parents("ul")
+  //   parents.prev('span').addClass("expanded")
+  //   parents.show().promise().done(drawPreviews)
+  // })
 
   function search(e) {
     $('.search-result').removeClass('search-result')
     let query = $('#searchbox').val()
     if (query != '' && query.length > 1) {
-      let results = $('#chooser span:icontains('+query+')').addClass("search-result")
+      let results = $('#chooser span:icontains(' + query + ')').addClass("search-result")
       let parents = results.parents("ul")
       parents.prev('span').addClass("expanded").removeClass('condensed')
       parents.show().promise().done(drawPreviews)
     }
   }
-  $("#searchbox").on('search',search)
+  $("#searchbox").on('search', search)
   $("#search").click(search)
-  $("#customizeChar").on('submit',function(e) {
+  $("#customizeChar").on('submit', function (e) {
     search()
     e.preventDefault()
   })
 
-  $('#displayMode-compact').click(function() {
+  $('#displayMode-compact').click(function () {
     $('#chooser').toggleClass('compact')
   })
 
-  $('#scroll-to-credits').click(function(e) {
+  $('#scroll-to-credits').click(function (e) {
     $('#credits')[0].scrollIntoView()
     e.preventDefault();
   })
 
-  $("#previewFile").change(function() {
+  $("#previewFile").change(function () {
     previewFile();
   });
 
-  $("#ZPOS").change(function() {
+  $("#ZPOS").change(function () {
     previewFile();
   });
 
-  $("#saveAsPNG").click(function() {
-    renameImageDownload(this, canvas, 'Download' + Math.floor(Math.random() * 100000) + '.png');
+  $("#saveAsPNG").click(function () {
+    let parts = []
+    for (const [, value] of Object.entries(jHash.val())) {
+       parts.push(value)
+    }    
+    renameImageDownload(this, canvas, parts.join("-")+'.png');
     return true
   });
 
-  $("#resetAll").click(function() {
-    window.setTimeout(function() {
+  $("#resetAll").click(function () {
+    window.setTimeout(function () {
       document.getElementById("previewFile").value = "";
       images["uploaded"] = null;
       document.getElementById("ZPOS").value = 0;
@@ -154,16 +162,16 @@ $(document).ready(function() {
     }, 0, false);
   });
 
-  $(".replacePinkMask").click(function() {
+  $(".replacePinkMask").click(function () {
     var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height),
-    pix = imgData.data;
+      pix = imgData.data;
 
-    for (var i = 0, n = pix.length; i <n; i += 4) {
-      const a = pix[i+3];
+    for (var i = 0, n = pix.length; i < n; i += 4) {
+      const a = pix[i + 3];
       if (a > 0) {
         const r = pix[i];
-        const g = pix[i+1];
-        const b = pix[i+2];
+        const g = pix[i + 1];
+        const b = pix[i + 2];
         if (r === 255 && g === 44 && b === 230) {
           pix[i + 3] = 0;
         }
@@ -172,7 +180,7 @@ $(document).ready(function() {
     ctx.putImageData(imgData, 0, 0);
   });
 
-  $(".generateSheetCreditsCsv").click(function() {
+  $(".generateSheetCreditsCsv").click(function () {
     let bl = new Blob([sheetCredits.join('\n')], {
       type: "text/html"
     });
@@ -186,7 +194,7 @@ $(document).ready(function() {
     document.removeChild(a);
   });
 
-  $(".generateSheetCreditsTxt").click(function() {
+  $(".generateSheetCreditsTxt").click(function () {
     let bl = new Blob([sheetCreditsToTxt()], {
       type: "text/html"
     });
@@ -200,7 +208,7 @@ $(document).ready(function() {
     document.removeChild(a);
   });
 
-  $(".generateAllCredits").click(function() {
+  $(".generateAllCredits").click(function () {
     let bl = new Blob([parsedCredits.join('\n')], {
       type: "text/html"
     });
@@ -214,7 +222,7 @@ $(document).ready(function() {
     document.removeChild(a);
   });
 
-  $("#whichAnim").change(function() {
+  $("#whichAnim").change(function () {
     animationItems = [];
     $selectedAnim = $("#whichAnim>:selected");
     animRowStart = parseInt($selectedAnim.data("row"));
@@ -228,7 +236,7 @@ $(document).ready(function() {
         return;
       }
     }
-    if ($selectedAnim.val() == "smash")  {
+    if ($selectedAnim.val() == "smash") {
       animationItems = [5, 4, 1, 0];
     } else {
       for (var i = 1; i < animRowFrames; ++i) {
@@ -237,7 +245,7 @@ $(document).ready(function() {
     }
   });
 
-  $("#spritesheet,#previewAnimations").on('click',function(e) {
+  $("#spritesheet,#previewAnimations").on('click', function (e) {
     $(this).toggleClass('zoomed')
   })
 
@@ -249,7 +257,7 @@ $(document).ready(function() {
     var bodyVariantNeedsReset = false;
     var bodyVariantIsSelected = false;
 
-    $("input[id^=body-]:checked").each(function() {
+    $("input[id^=body-]:checked").each(function () {
       var parent = $(this).closest("li[data-required]");
       if (parent.data("required")) {
         var requiredTypes = parent.data("required").split(",");
@@ -262,7 +270,7 @@ $(document).ready(function() {
       }
     })
 
-    if(bodyVariantNeedsReset || !bodyVariantIsSelected) {
+    if (bodyVariantNeedsReset || !bodyVariantIsSelected) {
       let idToSelect = "";
       if (bodyTypeName == "male") {
         idToSelect = "body-Humanlike_white";
@@ -294,7 +302,7 @@ $(document).ready(function() {
     if (fileName !== "") {
       let creditEntry = getCreditFor(fileName);
       if (!creditEntry) {
-        sheetCredits.push(fileName+",!MISSING LICENSE INFORMATION! PLEASE CORRECT MANUALY AND REPORT BACK VIA A GITHUB ISSUE,,,,,,,,BAD");
+        sheetCredits.push(fileName + ",!MISSING LICENSE INFORMATION! PLEASE CORRECT MANUALY AND REPORT BACK VIA A GITHUB ISSUE,,,,,,,,BAD");
       } else {
         sheetCredits.push(creditEntry);
       }
@@ -307,25 +315,25 @@ $(document).ready(function() {
     let authors = csv.slice(1).map((row) => row[2].split(",").map((au) => au.trim())).flat()
     authors = [...new Set(authors)]
 
-    let out = csv.slice(1).map(function(row) {
-      let urls = row.slice(4,9)
+    let out = csv.slice(1).map(function (row) {
+      let urls = row.slice(4, 9)
         .filter(function (x) { return !!x })
-        .map(function (x) { return "    - " + x})
+        .map(function (x) { return "    - " + x })
       return [`- ${row[0]}: by ${row[2]}. License(s): ${row[3]}. ${row[1]}`].concat(urls).join("\n")
     })
-    return "Authors: " + authors.join(", ")+"\n\n"+out.join("\n\n")
+    return "Authors: " + authors.join(", ") + "\n\n" + out.join("\n\n")
   }
 
   function displayCredits() {
     $("textarea#creditsText").val(sheetCreditsToTxt());
   }
 
-  function previewFile(){
+  function previewFile() {
     var preview = document.querySelector('img'); //selects the query named img
-    var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+    var file = document.querySelector('input[type=file]').files[0]; //sames as here
 
     var img = new Image;
-    img.onload = function() {
+    img.onload = function () {
       images["uploaded"] = img;
       redraw();
       showOrHideElements();
@@ -334,9 +342,9 @@ $(document).ready(function() {
   }
 
   function renameImageDownload(link, canvasItem, filename) {
-    link.href = canvasItem.toDataURL();
+    link.href = canvasItem.toDataURL("image/png").replace("image/png", "image/octet-stream");
     link.download = filename;
-  };
+  }
 
   function getBodyTypeName() {
     if ($("#sex-male").prop("checked")) {
@@ -359,8 +367,8 @@ $(document).ready(function() {
 
     sheetCredits = [creditColumns];
     zPosition = 0;
-    $("input[type=radio]:checked").each(function(index) {
-      for (jdx =1; jdx < 10; jdx++) {
+    $("input[type=radio]:checked").each(function (index) {
+      for (jdx = 1; jdx < 10; jdx++) {
         if ($(this).data(`layer_${jdx}_${bodyTypeName}`)) {
           const zPos = $(this).data(`layer_${jdx}_zpos`);
           const oversize = $(this).data(`layer_${jdx}_oversize`);
@@ -397,7 +405,7 @@ $(document).ready(function() {
         oversize = true;
         break;
       }
-      oversizeIdx+=1;
+      oversizeIdx += 1;
     }
 
     if (oversize) {
@@ -412,7 +420,7 @@ $(document).ready(function() {
     $("#chooser").css("height", canvas.height);
 
     var itemIdx = 0;
-    itemsToDraw.sort(function(lhs, rhs) {
+    itemsToDraw.sort(function (lhs, rhs) {
       return parseInt(lhs.zPos) - parseInt(rhs.zPos);
     });
 
@@ -423,27 +431,27 @@ $(document).ready(function() {
       if (oversize !== undefined) {
         if (oversize == "thrust") {
           for (var i = 0; i < 8; ++i)
-          for (var j = 0; j < 4; ++j) {
-            var imgData = ctx.getImageData(64 * i, 256 + 64 * j, 64, 64);
-            ctx.putImageData(imgData, 64 + 192 * i, 1408 + 192 * j);
-          }
+            for (var j = 0; j < 4; ++j) {
+              var imgData = ctx.getImageData(64 * i, 256 + 64 * j, 64, 64);
+              ctx.putImageData(imgData, 64 + 192 * i, 1408 + 192 * j);
+            }
         } else if (oversize == "slash") {
           for (var i = 0; i < 6; ++i)
-          for (var j = 0; j < 4; ++j) {
-            var imgData = ctx.getImageData(64 * i, 768 + 64 * j, 64, 64);
-            ctx.putImageData(imgData, 64 + 192 * i, 1408 + 192 * j);
-          }
+            for (var j = 0; j < 4; ++j) {
+              var imgData = ctx.getImageData(64 * i, 768 + 64 * j, 64, 64);
+              ctx.putImageData(imgData, 64 + 192 * i, 1408 + 192 * j);
+            }
         }
         ctx.drawImage(img, 0, 1344);
       } else {
         drawImage(ctx, img);
       }
-      itemIdx+=1;
+      itemIdx += 1;
     }
   }
 
   function showOrHideElements() {
-    $("li").each(function(index) {
+    $("li").each(function (index) {
       if ($(this).data("required")) {
         var requiredTypes = $(this).data("required").split(",");
         if (!requiredTypes.includes(getBodyTypeName())) {
@@ -464,47 +472,47 @@ $(document).ready(function() {
   }
 
   function parseCSV(str) {
-      // https://stackoverflow.com/a/14991797/4091874
-      // Author: Trevor Dixon https://stackoverflow.com/users/711902/trevor-dixon
-      // CC-BY-SA 4.0 -> sublicensable to GPL v3
+    // https://stackoverflow.com/a/14991797/4091874
+    // Author: Trevor Dixon https://stackoverflow.com/users/711902/trevor-dixon
+    // CC-BY-SA 4.0 -> sublicensable to GPL v3
 
-      var arr = [];
-      var quote = false;  // 'true' means we're inside a quoted field
+    var arr = [];
+    var quote = false;  // 'true' means we're inside a quoted field
 
-      // Iterate over each character, keep track of current row and column (of the returned array)
-      for (var row = 0, col = 0, c = 0; c < str.length; c++) {
-          var cc = str[c], nc = str[c+1];        // Current character, next character
-          arr[row] = arr[row] || [];             // Create a new row if necessary
-          arr[row][col] = arr[row][col] || '';   // Create a new column (start with empty string) if necessary
+    // Iterate over each character, keep track of current row and column (of the returned array)
+    for (var row = 0, col = 0, c = 0; c < str.length; c++) {
+      var cc = str[c], nc = str[c + 1];        // Current character, next character
+      arr[row] = arr[row] || [];             // Create a new row if necessary
+      arr[row][col] = arr[row][col] || '';   // Create a new column (start with empty string) if necessary
 
-          // If the current character is a quotation mark, and we're inside a
-          // quoted field, and the next character is also a quotation mark,
-          // add a quotation mark to the current column and skip the next character
-          if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+      // If the current character is a quotation mark, and we're inside a
+      // quoted field, and the next character is also a quotation mark,
+      // add a quotation mark to the current column and skip the next character
+      if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
 
-          // If it's just one quotation mark, begin/end quoted field
-          if (cc == '"') { quote = !quote; continue; }
+      // If it's just one quotation mark, begin/end quoted field
+      if (cc == '"') { quote = !quote; continue; }
 
-          // If it's a comma and we're not in a quoted field, move on to the next column
-          if (cc == ',' && !quote) { ++col; continue; }
+      // If it's a comma and we're not in a quoted field, move on to the next column
+      if (cc == ',' && !quote) { ++col; continue; }
 
-          // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
-          // and move on to the next row and move to column 0 of that new row
-          if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+      // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
+      // and move on to the next row and move to column 0 of that new row
+      if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
 
-          // If it's a newline (LF or CR) and we're not in a quoted field,
-          // move on to the next row and move to column 0 of that new row
-          if (cc == '\n' && !quote) { ++row; col = 0; continue; }
-          if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+      // If it's a newline (LF or CR) and we're not in a quoted field,
+      // move on to the next row and move to column 0 of that new row
+      if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+      if (cc == '\r' && !quote) { ++row; col = 0; continue; }
 
-          // Otherwise, append the current character to the current column
-          arr[row][col] += cc;
-      }
-      return arr;
+      // Otherwise, append the current character to the current column
+      arr[row][col] += cc;
+    }
+    return arr;
   }
 
   function interpretParams() {
-    $("input[type=radio]").each(function() {
+    $("input[type=radio]").each(function () {
       var words = _.words($(this).attr('id'), '-');
       var initial = _.initial(words).join('-');
       $(this).prop("checked", $(this).attr("checked") || params[initial] == _.last(words));
@@ -512,7 +520,7 @@ $(document).ready(function() {
   }
 
   function setParams() {
-    $("input[type=radio]:checked").each(function() {
+    $("input[type=radio]:checked").each(function () {
       var words = _.words($(this).attr('id'), '-');
       var initial = _.initial(words).join('-');
       if (!$(this).attr("checked") || params[initial]) {
@@ -524,7 +532,7 @@ $(document).ready(function() {
 
   function getImage(imgRef) {
     if (images[imgRef])
-    return images[imgRef];
+      return images[imgRef];
     else {
       var img = new Image();
       img.src = "spritesheets/" + imgRef;
@@ -542,7 +550,7 @@ $(document).ready(function() {
 
       var img = new Image();
       img.src = "spritesheets/" + imgRef;
-      img.onload = function() { callback(img) };
+      img.onload = function () { callback(img) };
       images[imgRef] = img;
       return img;
     }
@@ -552,38 +560,23 @@ $(document).ready(function() {
     try {
       ctx.drawImage(img, 0, 0);
       zPosition++;
-    } catch(err) {
+    } catch (err) {
       console.error("Error: could not find " + img.src);
     }
   }
 
   function drawPreviews() {
-    this.find("input[type=radio]").filter(function() {
-      return $(this).is(":visible");
-    }).each(function() {
+    $(document).find("input[type=radio]").each(function () {
       $this = $(this)
       if (!$this.parent().hasClass("hasPreview") && !$this.parent().hasClass("noPreview")) {
-        var prev = document.createElement("canvas");
-        var oversize = $(this).data("layer_1_oversize");
+        var prev = document.createElement("img");
         prev.setAttribute("width", 64);
         prev.setAttribute("height", 64);
-        var prevctx = prev.getContext("2d");
-        var img = null;
-        const previewRow = parseInt($(this).data("preview_row"));
-        var callback = function(img) {
-          try {
-            if (oversize)
-            prevctx.drawImage(img, 0, 2 * 192, 192, 192, 0, 0, 64, 64);
-            else
-            prevctx.drawImage(img, 0, previewRow * 64, 64, 64, 0, 0, 64, 64);
-          } catch (err) {
-            console.log(err);
-          }
-        };
-        img = getImage2($(this).data(`layer_1_${getBodyTypeName()}`), callback);
-        if (img != null) {
+        let thumbfile = $(this).data(`layer_1_${getBodyTypeName()}`);
+        if (thumbfile) {
+          thumbfile = thumbfile.substr(0, thumbfile.lastIndexOf(".")) + "-thumb.png";
+          prev.setAttribute("src", "spritesheets/" + thumbfile);
           this.parentNode.insertBefore(prev, this);
-          $(this).parent().addClass("hasPreview").parent().addClass("hasPreview");
         }
       }
     });
@@ -595,7 +588,7 @@ $(document).ready(function() {
     const currentFrame = animationItems[currentAnimationItemIndex];
     for (var i = 0; i < animRowNum; ++i) {
       if (oversize && (animRowStart === 4 || animRowStart === 12)) {
-        animCtx.drawImage(canvas, currentFrame * 192, 1344 + (i*192), 192, 192, i * 192, 0, 192, 192);
+        animCtx.drawImage(canvas, currentFrame * 192, 1344 + (i * 192), 192, 192, i * 192, 0, 192, 192);
       } else {
         animCtx.drawImage(canvas, currentFrame * 64, (animRowStart + i) * 64, 64, 64, i * 64, 0, 64, 64);
       }

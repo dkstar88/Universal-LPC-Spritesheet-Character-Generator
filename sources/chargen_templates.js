@@ -27,20 +27,32 @@ function generateListHTML(json) {
 
   const requiredSex = requiredSexes.join(",");
 
-  const startHTML = `<li data-required="[REQUIRED_SEX]"><span class="condensed">${name}</span><ul>`.replace("[REQUIRED_SEX]", requiredSex);
-  const templateHTML = loadFile("html_templates/template-general.html");
+  const startHTML = `<li class="" data-required="[REQUIRED_SEX]"><span class="">${name}</span><ul class="d-flex flex-wrap">`.replace("[REQUIRED_SEX]", requiredSex);
+  const templateHTML = `<li class="list-group-item">
+  <label for="[ID_FOR]">
+    <input type="radio" id="[ID_FOR]" name="[TYPE_NAME]" [DATA_FILE] [CHECKED]>
+    <span>[NAME]</span>
+  </label>
+</li>
+`;
+
   const endHTML = '</ul></li>';
 
   var idx = 0;
-  var listItemsHTML = `<li><input type="radio" id="${typeName}-none" name="${typeName}"> <label for="${typeName}-none">No ${typeName}</label></li>`;
+  var listItemsHTML = `<li class="list-group-item">
+  <img width="64" height="64">
+  <input type="radio" id="${typeName}-none" name="${typeName}"> 
+  <label for="${typeName}-none"><span>No ${typeName}<span></label>
+  </li>`;
+
   for (variant in variants) {
     const itemName = variants[idx];
-    const itemIdFor = typeName + "-" + name.replaceAll(" ", "_") +  "_" + itemName.replaceAll(" ", "_");
+    const itemIdFor = typeName + "-" + name.replaceAll(" ", "_") + "_" + itemName.replaceAll(" ", "_");
 
     var dataFiles = "";
     var sexIdx = 0;
     for (sex in requiredSexes) {
-      for (jdx =1; jdx < 10; jdx++) {
+      for (jdx = 1; jdx < 10; jdx++) {
         const layerDefinition = definition[`layer_${jdx}`];
         if (layerDefinition !== undefined) {
           if (sexIdx === 0) {
@@ -73,10 +85,10 @@ function generateListHTML(json) {
 
 function replaceDivs() {
   const matcher = "sheet_";
-  $("div").each(function() {
+  $("div").each(function () {
     var id = $(this).attr('id');
     if (!!id && id.includes(matcher)) {
-      $(`#${id}`).replaceWith(generateListHTML(`sheet_definitions/${id.replace(matcher,"")}.json`));
+      $(`#${id}`).replaceWith(generateListHTML(`sheet_definitions/${id.replace(matcher, "")}.json`));
     }
   });
 }
