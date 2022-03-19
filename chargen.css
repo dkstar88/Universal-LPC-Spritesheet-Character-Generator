@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+}
+
 button {
   padding: revert;
 }
@@ -85,23 +89,12 @@ input[type=button], input[type=reset] {
   margin-bottom: -64px;
 }
 
-#customizeChar {
-  width: 50%;
-  clear: none;
-  float: left;
-}
-
 #chooser {
   width: 100%;
+  height: 100%;
   overflow-y: auto;
   min-width: 200px;
-  float: left;
-}
-
-#preview {
-  width: 50%;
-  min-width: 432px;
-  float: right;
+  max-height: calc(100vh - 170px);
 }
 
 .instr {
@@ -194,6 +187,10 @@ li.hasPreview canvas {
   margin: 50px 0;
 }
 
+#customizeChar {
+  height: 100%;
+}
+
 .control-label {
   font-weight: bold;
 }
@@ -218,10 +215,21 @@ a {
 
 #chooser li.list-group-item {
   width: 70px;
-  height: 100px;
+  height: 80px;
   font-size: 70%;
   padding: 0px;
   border: none;
+  text-align: center;
+  color: #ffffffcc;
+  text-shadow:
+   -1px -1px 0 #000000cc,  
+    1px -1px 0 #000000cc,
+    -1px 1px 0 #000000cc,
+    1px 0px 0 #000000cc,
+    0px 1px 0 #000000cc,
+    -1px 0px 0 #000000cc,
+    0px -1px 0 #000000cc,
+     1px 1px 0 #000000cc;
 }
 
 
@@ -230,8 +238,6 @@ a {
   /* Add if not using autoprefixer */
   -webkit-appearance: none;
   appearance: none;
-  /* For iOS < 15 to remove gradient background */
-  background-color: #fff;
   /* Not removed via appearance */
   margin: 0;
 }
@@ -264,7 +270,7 @@ a {
 
 #chooser li.list-group-item label span {
   position: relative;
-  top: -70px;
+  top: -90px;
 }
 
 div.tab-pane ul {
@@ -274,4 +280,31 @@ div.tab-pane ul {
 
 div.tab-pane {
   padding: 1em;
+}
+
+#main {
+	height: 100%;
+	width: 100%;
+  max-height: calc(100vh - 120px);
+}
+
+#sidebar {
+	height: 100%;
+	display: inline-block;
+	vertical-align: top;
+	border-right: 1px solid #999;
+  max-height: calc(100vh - 120px);
+}
+
+#stage {
+	background-color: #f8f8f8;
+	display: inline-block;
+	vertical-align: top;
+	height: 100%;
+	overflow: auto;
+}
+
+#main .row {
+  height: 100%;
+  max-height: calc(100vh - 120px);
 }

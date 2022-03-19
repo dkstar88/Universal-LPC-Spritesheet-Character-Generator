@@ -77,6 +77,7 @@ $(document).ready(function () {
       const id = $(this).attr('id');
       if (id.startsWith("sex-")) {
         selectPossibleBodyType();
+        drawPreviews();
       }
       setParams();
       redraw();
@@ -417,7 +418,7 @@ $(document).ready(function () {
       canvas.height = 1344;
       $(anim).removeClass('oversize')
     }
-    $("#chooser").css("height", canvas.height);
+    // $("#chooser").css("height", canvas.height);
 
     var itemIdx = 0;
     itemsToDraw.sort(function (lhs, rhs) {
@@ -569,15 +570,25 @@ $(document).ready(function () {
     $(document).find("input[type=radio]").each(function () {
       $this = $(this)
       if (!$this.parent().hasClass("hasPreview") && !$this.parent().hasClass("noPreview")) {
+
+        var thumbfile = $(this).data(`layer_1_${getBodyTypeName()}`);
+        if (!thumbfile) {
+          return;
+          
+        }
+        thumbfile = "spritesheets/" + thumbfile.substr(0, thumbfile.lastIndexOf(".")) + "-thumb.png";
+        var existImg = $(this.parentNode).find("img");
+        if (existImg.length) {
+          existImg.attr("src", thumbfile)
+          return
+        }
         var prev = document.createElement("img");
         prev.setAttribute("width", 64);
         prev.setAttribute("height", 64);
-        let thumbfile = $(this).data(`layer_1_${getBodyTypeName()}`);
-        if (thumbfile) {
-          thumbfile = thumbfile.substr(0, thumbfile.lastIndexOf(".")) + "-thumb.png";
-          prev.setAttribute("src", "spritesheets/" + thumbfile);
-          this.parentNode.insertBefore(prev, this);
-        }
+        prev.setAttribute("src", thumbfile);
+        prev.style.backgroundImage = "";
+        this.parentNode.insertBefore(prev, this);
+      
       }
     });
   };

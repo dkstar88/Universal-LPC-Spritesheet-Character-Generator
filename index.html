@@ -29,21 +29,90 @@
 		<div class="container-fluid">
 			<span class="navbar-brand mb-0 h1">Universal LPC Spritesheet Generator</span>
 
-			<div>
-				<label class="control-label">Download:</label>
-				<a href="#" class="btn btn-primary" id="saveAsPNG">Save As PNG</a>
-				<button type="button" class="btn btn-primary generateSheetCreditsTxt">Credits (text)</button>
-				<button type="button" class="btn btn-primary generateSheetCreditsCsv">Credits (CSV)</button>
+			<div class="d-flex">
+				<span class="navbar-text me-2">Body type</span>
+				<div id="controls" class="me-2">
+					<div>
+						<!-- Body types -->
+						
+						<ul class="list-group list-group-horizontal">
+							<li class="list-group-item noPreview ">
+								<input type="radio" id="sex-male" name="sex" checked>
+								<label for="sex-male">Male</label>
+							</li>
+							<li class="list-group-item noPreview">
+								<input type="radio" id="sex-female" name="sex">
+								<label for="sex-female">Female</label>
+							</li>
+							<li class="list-group-item noPreview">
+								<input type="radio" id="sex-child" name="sex">
+								<label for="sex-child">Child</label>
+							</li>
+							<li class="list-group-item noPreview">
+								<input type="radio" id="sex-pregnant" name="sex">
+								<label for="sex-pregnant">Pregnant</label>
+							</li>
+							<li class="list-group-item noPreview">
+								<input type="radio" id="sex-muscular" name="sex">
+								<label for="sex-muscular">Muscular</label>
+							</li>
+						</ul>
+	
+					</div>
+				</div>
+
+				
+			<div class="dropdown me-2">
+				<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+					aria-expanded="false">
+					File
+				</a>
+				
+				<ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+					<li><a href="#" class="dropdown-item" id="saveAsPNG">Save As PNG</a></li>
+					<li><a class="dropdown-item generateSheetCreditsTxt">Credits As Text</a></li>
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+					<li><a class="dropdown-item generateSheetCreditsCsv">Credits As CSV</a></li>
+				</ul>
 			</div>
-			<div>
-				<label class="control-label">Edit:</label>
-				<button type="button" id="resetAll" class="btn btn-primary ">Reset all</button>
-				<button type="button" class="btn btn-primary  replacePinkMask">Replace Mask (pink)</button>
+			<div class="dropdown me-2">
+				<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+					aria-expanded="false">
+					Edit
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+					<li><a href="#" class="dropdown-item" id="resetAll">Reset all</a></li>
+					<li><a class="dropdown-item replacePinkMask">Replace Mask (pink)</a></li>
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+					<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#advanced-tools-modal">Advanced
+							Tool</a></li>
+				</ul>
 			</div>
-			<div>
-				<label class="control-label" for="searchbox">Search: </label><input type="search" id="searchbox" name=""
-					placeholder="Search" />
+			<div class="dropdown me-2">
+				<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+					aria-expanded="false">
+					View
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+					<li><a href="#" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#bottomCreditsBar"
+							aria-controls="bottomCreditsBar" aria-expanded="false" aria-label="Toggle Credits">Show
+							Credits</a></li>
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+					<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#advanced-tools-modal">Advanced
+							Tool</a></li>
+				</ul>
 			</div>
+
+			<label class="control-label" for="searchbox">Search: </label><input type="search" id="searchbox" name=""
+				placeholder="Search" />
+
+			</div>	
 		</div>
 	</nav>
 
@@ -59,39 +128,11 @@
 		</div>
 	</nav>
 
+	<div id="main" class="container-fluid">
 
-	<div class="container-fluid">
-
+		<div class="row">
+		<div id="sidebar" class="col-md">
 		<form id="customizeChar">
-			<div id="controls">
-				<div>
-					<!-- Body types -->
-					<span class="">Body type</span>
-					<ul class="list-group list-group-horizontal">
-						<li class="list-group-item noPreview ">
-							<input type="radio" id="sex-male" name="sex" checked>
-							<label for="sex-male">Male</label>
-						</li>
-						<li class="list-group-item noPreview">
-							<input type="radio" id="sex-female" name="sex">
-							<label for="sex-female">Female</label>
-						</li>
-						<li class="list-group-item noPreview">
-							<input type="radio" id="sex-child" name="sex">
-							<label for="sex-child">Child</label>
-						</li>
-						<li class="list-group-item noPreview">
-							<input type="radio" id="sex-pregnant" name="sex">
-							<label for="sex-pregnant">Pregnant</label>
-						</li>
-						<li class="list-group-item noPreview">
-							<input type="radio" id="sex-muscular" name="sex">
-							<label for="sex-muscular">Muscular</label>
-						</li>
-					</ul>
-
-				</div>
-			</div>
 
 
 			<!-- Tabs navs -->
@@ -704,14 +745,9 @@
 
 
 		</form>
+		</div>
 
-	</div>
-	<script>
-		var firstTabEl = document.querySelector('#out-tab li:first-child button')
-		var firstTab = new bootstrap.Tab(firstTabEl)
-
-		firstTab.show()
-	</script>
+		<div id="stage" class="col-md-7">
 
 	<section id="preview">
 		<div id="previewAnimationsBox">
@@ -732,7 +768,66 @@
 		<canvas id="spritesheet" width="832" height="1344">HTML5 Browser required.</canvas>
 	</section>
 
-	<nav class="navbar fixed-bottom navbar-light bg-light">
+		</div>
+	</div>
+	<script>
+		var firstTabEl = document.querySelector('#out-tab li:first-child button')
+		var firstTab = new bootstrap.Tab(firstTabEl)
+
+		firstTab.show()
+
+		// $('#advanced-tools-modal').on('shown.bs.modal', function () {
+  		// 	$('#myInput').trigger('focus')
+		// })
+		$(document).ready( () => {
+
+			
+
+		});
+	</script>
+
+	<!-- Modal -->
+	<div class="modal fade" id="advanced-tools-modal" tabindex="-1" role="dialog" aria-labelledby="advanced-tools-title"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="advanced-tools-title">Advanced Tools</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="advanced">
+						<div class="mb-3 row">
+							<label for="previewFile" class="form-label"><strong>Custom file: </strong><span>Draw local
+									file with custom z-position:</span></label>
+							<input type="file" class="form-control" id="previewFile">
+						</div>
+						<div class="mb-3 row">
+							<label for="ZPOS" class="form-label">Z-position</label>
+							<input id="ZPOS" class="form-control" type="text" name="ZPOS">
+						</div>
+						<div class="mb-3 row">
+							<label for="inputPassword" class="form-label">
+								<strong>Custom animation: </strong><span>Define custom sequence of frames for the
+									selected
+									animation. First
+									frame is 0, e.g.: '3, 5, 3, 0'.</span></label>
+							<input id="customFrames" class="form-control" type="text" name="customFrames">
+						</div>
+
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<nav id="bottomCreditsBar" class="collapse navbar fixed-bottom navbar-light bg-light">
 		<div class="container-fluid">
 
 			<div id="credits">
@@ -753,20 +848,7 @@
 				<textarea id="creditsText" class="form-control form-control-sm" rows="5" cols="300"
 					readonly>Credits</textarea>
 			</div>
-			<div id="advanced">
-				<h5>Advanced Tools</h5>
-				<span class="navbar-text small">
-					<strong>Custom file: </strong><span>Draw local file with custom z-position:</span>
-					<input type="file" id="previewFile">
-					<label for="ZPOS">Z-position:</label><input id="ZPOS" type="text" name="ZPOS">
-				</span>
-				<span class="navbar-text small">
-					<strong>Custom animation: </strong><span>Define custom sequence of frames for the selected
-						animation. First
-						frame is 0, e.g.: '3, 5, 3, 0'.</span>
-					<input id="customFrames" type="text" name="customFrames">custom frames<br>
-				</span>
-			</div>
+
 		</div>
 	</nav>
 
